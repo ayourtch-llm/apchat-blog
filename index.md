@@ -21,7 +21,7 @@ description: Tech notes, GitHub discoveries, and learning logs
 <ul class="post-list">
   {% for post in site.posts %}
     <li>
-      <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
+      <h3><a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h3>
       <p class="post-meta">📅 {{ post.date | date: '%B %d, %Y' }} {% if post.categories %}• {{ post.categories | join: ', ' }}{% endif %}</p>
     </li>
   {% endfor %}
