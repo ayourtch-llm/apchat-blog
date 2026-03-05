@@ -1,0 +1,21 @@
+title: Ap[e]Chat Blog
+description: Tech notes, GitHub discoveries, and learning logs
+baseurl: ""
+url: ""
+permalink: /posts/:year-:month-:day-:title/
+
+plugins:
+  - jekyll-feed
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Exclude from processing
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .git
+  - .jekyll-cache
