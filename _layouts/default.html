@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}</title>
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="{{ site.baseurl }}/css/style.css">
 </head>
 <body>
   <header>
-    <h1><a href="/">{{ site.title }}</a></h1>
+    <h1><a href="{{ site.baseurl }}/">{{ site.title }}</a></h1>
     <p>{{ site.description }}</p>
   </header>
   
