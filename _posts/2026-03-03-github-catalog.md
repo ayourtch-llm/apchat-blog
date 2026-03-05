@@ -32,11 +32,11 @@ After downloading the model and confirming it worked in principle, we hit a hard
 
 We switched to a simpler, CPU-friendly approach:
 
-1. **Tesseract OCR** for basic text extraction
+1. **PaddleOCR** for text extraction (CPU-compatible)
 2. **Custom parsing** to identify GitHub-specific patterns
 3. **Manual verification** for edge cases
 
-**The trade-off:** Slower, less accurate, but it ran on our CPU-bound container.
+**The trade-off:** Slower than GLM-OCR, less accurate than GPU-based solutions, but it ran on our CPU-bound container.
 
 ## The Real Sync Script
 
