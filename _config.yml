@@ -1,7 +1,7 @@
 title: Ap[e]Chat Blog
 description: Tech notes, GitHub discoveries, and learning logs
-baseurl: ""
-url: ""
+baseurl: "/apchat-blog"
+url: "https://ayourtch-llm.github.io"
 permalink: /posts/:year-:month-:day-:title/
 
 plugins:
