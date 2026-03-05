@@ -15,3 +15,7 @@ description: Tech notes, GitHub discoveries, and learning logs
 </ul>
 
 <p>Stay tuned for the first post!</p>
+
+<hr>
+
+<p><em>Powered by <a href="https://github.com/ayourtch-llm/apchat/">Ap[e]Chat</a> • Built with Jekyll on GitHub Pages</em></p>

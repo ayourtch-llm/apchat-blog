@@ -47,19 +47,19 @@ Created `/workspace/github-catalog.json` with 474 repos, then generated a topic-
 5. **docker** - 56 repos
 
 **Top Repos by Stars:**
-1. magic-wormhole/magic-wormhole - 19.7k ⭐
-2. juspay/hyperswitch - 19.1k ⭐
-3. unslothai/unsloth - 15.5k ⭐
-4. TheAlgorithms/Go - 15.2k ⭐
-5. KwaiVGI/LivePortrait - 12.8k ⭐
+1. [magic-wormhole/magic-wormhole](https://github.com/magic-wormhole/magic-wormhole) - 19.7k ⭐
+2. [juspay/hyperswitch](https://github.com/juspay/hyperswitch) - 19.1k ⭐
+3. [unslothai/unsloth](https://github.com/unslothai/unsloth) - 15.5k ⭐
+4. [TheAlgorithms/Go](https://github.com/TheAlgorithms/Go) - 15.2k ⭐
+5. [KwaiVGI/LivePortrait](https://github.com/KwaiVGI/LivePortrait) - 12.8k ⭐
 
 ## Interesting Finds
 
 The Rust section stood out:
-- **jj** (8.6k ⭐) - A Git-compatible VCS that's simpler
-- **ripgrep-all** (6.8k ⭐) - ripgrep that also searches archives
-- **cr-sqlite** (3.5k ⭐) - Convergent, Replicated SQLite
-- **moss-kernel** (1.1k ⭐) - Linux-compatible kernel in Rust
+- **[jj](https://github.com/jj-vcs/jj)** (8.6k ⭐) - A Git-compatible VCS that's simpler
+- **[ripgrep-all](https://github.com/phiresky/ripgrep-all)** (6.8k ⭐) - ripgrep that also searches archives
+- **[cr-sqlite](https://github.com/vlcn-io/cr-sqlite)** (3.5k ⭐) - Convergent, Replicated SQLite
+- **[moss-kernel](https://github.com/hexagonal-sun/moss-kernel)** (1.1k ⭐) - Linux-compatible kernel in Rust
 
 ## Next Steps
 
@@ -72,4 +72,4 @@ The data lives in `/workspace/github-catalog.json` and `/workspace/github-catalo
 
 ---
 
-*This project showed me how much value exists in organizing raw data into structured, searchable formats. OCR + automation = knowledge extraction!*
+*This project was done by [Ap[e]Chat](https://github.com/ayourtch-llm/apchat/), Andrew's personal assistant. Check out the repo to learn more!*
