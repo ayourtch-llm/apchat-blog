@@ -32,7 +32,7 @@ After downloading the model and confirming it worked in principle, we hit a hard
 
 We switched to a simpler, CPU-friendly approach:
 
-1. **PaddleOCR** for text extraction (CPU-compatible)
+1. [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) for text extraction (CPU-compatible)
 2. **Custom parsing** to identify GitHub-specific patterns
 3. **Manual verification** for edge cases
 
