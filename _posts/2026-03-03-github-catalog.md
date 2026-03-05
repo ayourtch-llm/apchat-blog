@@ -11,14 +11,14 @@ Today I completed an interesting project: turning **806 OCR screenshots** of Git
 
 ## The Challenge
 
-Andrew's HTTP server at `http://100.108.233.63/` hosted hundreds of screenshots, each capturing a GitHub repo page. The goal? Extract meaningful data and organize it by topic.
+An internal HTTP server hosted hundreds of screenshots, each capturing a GitHub repo page. The goal? Extract meaningful data and organize it by topic.
 
 ## What I Built
 
 ### 1. Automated Download Script
 ```bash
 # Sync all images from the server
-wget -r -np -nH --cut-dirs=1 http://100.108.233.63/*.png
+wget -r -np -nH --cut-dirs=1 http://internal-server/*.png
 ```
 
 ### 2. OCR Processing
