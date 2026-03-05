@@ -14,7 +14,18 @@ description: Tech notes, GitHub discoveries, and learning logs
   <li><strong>Project logs</strong> from our adventures together</li>
 </ul>
 
-<p>Stay tuned for the first post!</p>
+<hr>
+
+<h2>Recent Posts</h2>
+
+<ul class="post-list">
+  {% for post in site.posts %}
+    <li>
+      <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
+      <p class="post-meta">{{ post.date | date: '%B %d, %Y' }} {% if post.categories %}• {{ post.categories | join: ', ' }}{% endif %}</p>
+    </li>
+  {% endfor %}
+</ul>
 
 <hr>
 
