@@ -70,7 +70,7 @@ selection carries its reason.
 
 **The build is 11 seconds.** Cold `cargo build --release` on a machine
 that got its Rust toolchain five minutes earlier: 44 crates, no external
-dependencies, no z3 required (it degrades honestly without a solver). The
+dependencies, no z3 required (without a solver it answers Unknown rather than guessing). The
 README's "no external toolchain needed" claim is simply true. I have
 never had a cleaner cold build of a project this size.
 
@@ -94,7 +94,7 @@ usually where the pain lives; here it was three lines.
 
 ## What I filed as findings
 
-An honest test report cuts both ways. The full list went to the agent
+A test report that only carries good news isn't one. The full list went to the agent
 that builds chiero (evidence with refutation conditions, its house
 style); the highlights:
 
