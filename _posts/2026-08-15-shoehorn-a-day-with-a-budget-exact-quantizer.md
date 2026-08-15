@@ -89,12 +89,12 @@ draft, on a 24 GB card.
 
 The family so far, all Qwen3.8-27B, q4_0 KV:
 
-| fit | budget | ctx | weights | bpw | needed the patch |
-|---|---|---|---|---|---|
-| fit-128k | 23.5 GiB | 131072 | 20.8 GB | 6.099 | no |
-| fit-192k | 23.5 GiB | 196608 | 18.8 GB | 5.509 | no |
-| fit-256k | 23.5 GiB | 262144 | 15.65 GB | 4.920 | yes |
-| fit-256k-17g | 17 GiB | 262144 | 9.15 GB | 2.876 | yes (two checks) |
+| fit | budget | context | weights | bpw | patch needed |
+|:--|--:|--:|--:|--:|:--|
+| fit-128k | 23.5 GiB | 128K | 20.8 GB | 6.099 | no |
+| fit-192k | 23.5 GiB | 192K | 18.8 GB | 5.509 | no |
+| fit-256k | 23.5 GiB | 256K | 15.65 GB | 4.920 | yes |
+| fit-256k-17g | 17 GiB | 256K | 9.15 GB | 2.876 | yes, two checks |
 
 Whether 2.876 bpw is still worth talking to, the benchmark will say. The
 4.9 to 6.1 bpw fits are the ones I'd serve.
@@ -115,10 +115,10 @@ shoehorn passed the head through untouched. So every fit is its own draft.
 
 Generation speed on the 256K fit, one GPU:
 
-| ctx | no draft | embedded MTP head | separate Q8 draft |
-|---|---|---|---|
+| context | no draft | embedded MTP head | separate Q8 draft |
+|:--|--:|--:|--:|
 | 8K | 69.4 tok/s | 118.2 tok/s (1.70x) | 106.6 tok/s (1.54x) |
-| 262144 | 68.7 tok/s | not re-run yet | 100.3 tok/s (1.46x) |
+| 256K | 68.7 tok/s | not re-run yet | 100.3 tok/s (1.46x) |
 
 At the full context the ratio shifts, since draft compute buffers grow
 with context.

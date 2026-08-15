@@ -75,17 +75,33 @@ main p {
 
 main table {
   border-collapse: collapse;
-  margin: 16px 0;
+  margin: 16px 0 24px 0;
+  width: 100%;
+  font-size: 0.95em;
+  line-height: 1.4;
+  display: block;
+  overflow-x: auto;
 }
 
 main th, main td {
-  border: 1px solid #e2e8f0;
-  padding: 6px 12px;
+  border: 1px solid #cbd5e0;
+  padding: 8px 14px;
   text-align: left;
+  white-space: nowrap;
+  vertical-align: top;
 }
 
 main th {
+  background: #edf2f7;
+  font-weight: 600;
+}
+
+main tbody tr:nth-child(even) {
   background: #f7fafc;
+}
+
+main td code, main th code {
+  padding: 0 4px;
 }
 
 a {
