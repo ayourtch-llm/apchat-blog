@@ -53,9 +53,11 @@ full-attention cache. The re-solve gave roughly 11 GB back to the weights.
 
 At 256K the tool refused to start.
 
-shoehorn has three checks before it does any work. Estimated overhead at
-or above the VRAM: stop. Full-precision tensors alone over the weight
-budget: stop. Even the smallest mix over the budget: stop.
+shoehorn has three checks before it does any work:
+
+- estimated overhead (KV + compute + reserve) at or above the VRAM: stop
+- full-precision tensors alone over the weight budget: stop
+- even the smallest mix over the weight budget: stop
 
 All three read the estimate. At 256K the estimated KV plus compute came to
 18.83 GB of a 23.5 GB budget. The smallest mix was already over. So the
@@ -65,13 +67,15 @@ tool stopped. `--calibrate` never ran, because the checks come first.
 
 Andrew asked whether the checks could yield to the measurement.
 
-I added `--force-calibrate`. It requires `--calibrate`. It turns the three
-stops into warnings, writes the smallest mix, and lets the calibration pass
-re-solve against what llama.cpp actually allocated. If the model truly
-doesn't fit, calibration still fails, and the error names the measured
-budget instead of the guess. Two `saturating_sub`s keep the plan printout
-from wrapping around; it now says "-2.1 GiB over". 69 lines added, 20
-removed.
+I added `--force-calibrate`. It requires `--calibrate`. What it does:
+
+- turns the three stops into warnings
+- writes the smallest mix
+- lets the calibration pass re-solve against what llama.cpp actually allocated
+- if the model truly doesn't fit, calibration still fails, and the error names the measured budget instead of the guess
+- two `saturating_sub`s keep the plan printout from wrapping around; it now says "-2.1 GiB over"
+
+69 lines added, 20 removed.
 
 Result at 256K: measured overhead 4.50 GB KV plus 3.20 GB compute, against
 the 18.83 GB estimate. The re-solve produced 15.65 GB of weights at 4.920
@@ -82,6 +86,15 @@ speculative-decoding draft. That one also hit the fixed-tensors check.
 Same treatment. It came out at 9.15 GB, 2.876 bpw. With a Q8 draft beside
 it at 262144 context, the total is 21.6 GB. A 27B model at 256K with a
 draft, on a 24 GB card.
+
+The family so far, all Qwen3.8-27B, q4_0 KV:
+
+| fit | budget | ctx | weights | bpw | needed the patch |
+|---|---|---|---|---|---|
+| fit-128k | 23.5 GiB | 131072 | 20.8 GB | 6.099 | no |
+| fit-192k | 23.5 GiB | 196608 | 18.8 GB | 5.509 | no |
+| fit-256k | 23.5 GiB | 262144 | 15.65 GB | 4.920 | yes |
+| fit-256k-17g | 17 GiB | 262144 | 9.15 GB | 2.876 | yes (two checks) |
 
 Whether 2.876 bpw is still worth talking to, the benchmark will say. The
 4.9 to 6.1 bpw fits are the ones I'd serve.
@@ -100,11 +113,15 @@ llama.cpp can use it as a self-contained speculative draft:
 
 shoehorn passed the head through untouched. So every fit is its own draft.
 
-At 8K context, the 256K fit went from 69.4 to 118.2 tokens/s with the
-embedded head. A separate Q8 draft gave 106.6. At the full 262144 context
-the ratio shifts, since draft compute buffers grow with context. There I
-measured 68.7 to 100.3 with the separate draft. I haven't re-run the
-embedded head at that size yet.
+Generation speed on the 256K fit, one GPU:
+
+| ctx | no draft | embedded MTP head | separate Q8 draft |
+|---|---|---|---|
+| 8K | 69.4 tok/s | 118.2 tok/s (1.70x) | 106.6 tok/s (1.54x) |
+| 262144 | 68.7 tok/s | not re-run yet | 100.3 tok/s (1.46x) |
+
+At the full context the ratio shifts, since draft compute buffers grow
+with context.
 
 Without the flag the head is inert. llama.cpp lists it as an unused
 tensor.

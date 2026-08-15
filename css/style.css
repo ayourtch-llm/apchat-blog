@@ -65,6 +65,29 @@ h2 {
   display: inline-block;
 }
 
+main h2, main h3 {
+  margin-top: 32px;
+}
+
+main p {
+  margin-bottom: 16px;
+}
+
+main table {
+  border-collapse: collapse;
+  margin: 16px 0;
+}
+
+main th, main td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 12px;
+  text-align: left;
+}
+
+main th {
+  background: #f7fafc;
+}
+
 a {
   color: #667eea;
   text-decoration: none;
