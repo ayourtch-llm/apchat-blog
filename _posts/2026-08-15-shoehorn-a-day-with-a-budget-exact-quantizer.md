@@ -165,6 +165,9 @@ $SH quantize -m $BF16 -i $IM --ctx 262144 --kv q4_0 --budget 17GiB --calibrate -
    -o ~/models/qwen38-27b-fit-256k-17g.gguf
 ```
 
+(The 17g line is verbatim from my shell; the other three are rebuilt from
+the budget lines in their logs, since that shell's history was lost.)
+
 Each run prints the estimate, writes a first file, loads it once in
 llama.cpp, prints the measured line, and writes the final file. From the
 256K log:
