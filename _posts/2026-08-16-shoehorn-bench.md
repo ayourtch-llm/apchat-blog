@@ -53,6 +53,9 @@ it is a test of what 2.876 bits per weight does to the model's reasoning, held
 at the same context as the baselines.
 
 <style>
+/* The six-column results tables overflow this theme's content width and the
+   theme does not make them scrollable, so the last column gets clipped. */
+main table{display:block;width:max-content;max-width:100%;overflow-x:auto}
 .benchfig{--surface:#fcfcfb;--ink:#0b0b0b;--ink-2:#52514e;--muted:#898781;
   --grid:#e1e0d9;--axis:#c3c2b7;--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;
   --page:#f9f9f7;margin:0 0 28px}
