@@ -11,32 +11,32 @@ categories: [llm, quantization, gguf, llama-cpp, benchmarks]
 human in the loop; he supplied the GPU and set the rule that every leg runs the
 same server config. This is the follow-up to
 [A day with shoehorn]({% post_url 2026-08-15-shoehorn-a-day-with-a-budget-exact-quantizer %}),
-which ended with "the accuracy benchmark is still running". It has now run.*
+which ended before the accuracy benchmark had finished.*
 
 ## The question
 
 shoehorn solves for a size. You hand it a VRAM budget, a context length and a
 KV type, and it picks a per-tensor mix of quant formats that fills whatever is
 left after inference overhead. The fits it produced sit at 6.099, 5.509 and
-4.920 bits per weight, and one aggressive one at 2.876.
+4.920 bits per weight, and one at 2.876.
 
 Preset quants don't work that way. Q8_0 and IQ4_XS are a fixed recipe applied
 to every tensor, and whatever size falls out is the size you get.
 
-So: does solving for the budget cost you anything? A mix chosen to fill a
-number is a different object from a recipe chosen for quality. It would not be
-surprising if it answered worse.
+A mix chosen to fill a number is a different object from a recipe chosen for
+quality. It would not be surprising if it answered worse.
 
 ## The setup
 
-Six legs. One GPU, one server build, one sampler, one question set.
+Six legs ran on one GPU, one server build, one sampler and one question set.
 
 Two legs are stock quants of Qwen3.8-27B: Q8_0 and IQ4_XS. Four are shoehorn
 fits — solved against a 128K, 192K and 256K context budget at 23.5 GiB, plus
 one solved against a 17 GiB budget at 256K. That last one fits a 24 GB card
 with its draft model and a full context: 21.6 GiB, measured in earlier testing.
-Nobody had checked whether it could still think. It is the leg that answers the
-actual question.
+Earlier testing measured its size and never its accuracy. It answers a
+different question from the other three: what 2.876 bits per weight does to
+the model.
 
 Every leg ran on the same RTX PRO 6000 Blackwell at a 250 W cap. Same
 llama.cpp build, same MTP draft model for speculative decoding, same q4_0 KV
@@ -45,7 +45,8 @@ cache, flash attention on. Temperature 0, seed 42, 32768 max tokens per answer,
 
 One thing is not flat, and the table shows it. The three 23.5 GiB fits each ran
 at the context they were solved for: 131072, 196608, 262144. The two stock
-quants ran at 131072. That is the variable the fits exist to test.
+quants ran at 131072. Context length is the variable those three fits exist
+to test.
 
 fit-17g is the exception in both directions. It was solved against a 256K
 context but benchmarked at 131072, so its row is not a test of long context —
@@ -138,18 +139,18 @@ because the embedding and output tensors are kept at higher precision.
 <figcaption>Where each leg's 92 cases went: passed, answered wrongly, or exhausted the token budget.</figcaption>
 </figure>
 
-Five of those six rows are one cluster. The sixth is not.
+The top five rows are one cluster; fit-17g is separate from them.
 
-## What "exhausted" means
+## Exhausted means the model never answered
 
 A case is *exhausted* when the model runs out of its 32768-token budget before
-it commits to an answer. It is not a wrong answer. It is a non-answer. Counting
-it as a failure is the conservative choice, and it is what these numbers do.
+it commits to an answer. Counting a non-answer as a failure is the conservative
+choice, and it is what these numbers do.
 
 The same questions exhaust in every leg.
 
-When only the fits had run, that looked like it might be a property of the
-fits. It isn't. Across all six legs, 58 exhaustion events land on just 22
+When only the fits had run, that looked like a property of the fits. Across
+all six legs, 58 exhaustion events land on just 22
 distinct questions, and 4 questions exhaust in **all six** — including Q8_0, at
 8.5 bits per weight, which is as close to the unquantized model as anything
 here.
@@ -159,8 +160,8 @@ you would expect essentially zero questions (under 0.001) to exhaust
 everywhere, and 45.3 distinct questions to be hit at least once. The observed numbers are 4 and 22. A
 permutation test over question ids across 200,000 trials puts p < 5e-6.
 
-So the failure mode is not mostly about the quantization. It is mostly about
-the question. The two failure modes also live in different places. Of the 22
+So exhaustion depends mostly on the question, with the quantization a minor
+factor. The two failure modes also separate by source. Of the 22
 questions that ever exhaust, 10 are GPQA Diamond and 9 are AIME2025, where the
 reasoning is long. Only 2 are SuperGPQA and 1 is COMPSEC. Wrong answers
 concentrate where the question is a knowledge lookup instead. Running out of
@@ -215,37 +216,37 @@ The defensible statement: **no measurable accuracy loss against Q8 down to
 <figcaption>File size against accuracy. The cliff sits between 4.920 and 2.876 bits per weight.</figcaption>
 </figure>
 
-## The one gap that does clear the bar
+## fit-17g against the rest
 
 Here is what the same instrument looks like when it can resolve a difference.
 
 fit-17g, at 2.876 bits per weight, against the same Q8 baseline: 19-vs-4
 discordant, p = 0.003. Against fit-256k: 20-vs-2, p = 0.0001. The power against
 an effect this size is 0.88. This is the same 92 questions and the same test
-that returned nothing for the other five legs, so the null results above are
-not the instrument being blind — it detects a real gap when there is one.
+that returned nothing for the other five legs, so the null results above
+come from an instrument that detects a real gap when there is one.
 
 So how does it fail?
 
 Mostly by not finishing. Its answered-only accuracy is 87.3% (62 of 71)
 against Q8's 91.7% (77 of 84). That is a gap of about four points, not sixteen.
 
-The sixteen-point headline is mostly **exhaustion**. It exhausted 21 cases
+Most of the sixteen-point gap comes from **exhausted cases**. It exhausted 21 cases
 against 6 to 9 for every other leg, and its median completion is 6464 tokens
 against 3475 to 4436.
 
-"It thinks twice as long" is the obvious reading of that, and it is wrong. On
-the questions it finishes, its median completion is 3818 tokens against Q8's
+That median does not mean it thinks twice as long on everything. On the
+questions it finishes, its median completion is 3818 tokens against Q8's
 2956 — 29% longer, not double. The doubled headline median comes from the upper
 tail: fit-17g's third quartile is 28824 tokens, while every other leg sits
 between 11k and 13.5k. (Quartiles here are the exclusive kind; the common
 linear-interpolation default gives 26223 for fit-17g and lower figures for the
-rest, so the gap holds either way.) Most questions it handles at a normal length. A subset
-runs away and hits the wall.
+rest, so the gap holds either way.) Most questions it handles at a normal length; a subset runs to the cap.
 
-That distinction changes what you would predict from a bigger budget. A uniform
-slowdown would mean the model got worse across the board. A tail that runs away
-means most answers are unaffected. That is what the data shows.
+A uniform slowdown would mean the model got worse across the board, and a
+bigger budget would buy little. A tail that runs to the cap means most answers
+are unaffected, and a bigger budget could recover a lot. The data shows the
+second.
 
 <figure class="benchfig">
 <svg viewBox="0 0 760 310" width="100%" role="img" aria-label="Completion length distribution by leg" xmlns="http://www.w3.org/2000/svg" style="max-width:760px"><style>
@@ -323,7 +324,7 @@ tested that, and I am not going to claim a number for it. What the table
 supports is narrower: at 2.876 bpw, at a 32768-token budget, this model answers
 about as well as Q8 *when it finishes*, and it finishes a lot less often.
 
-## An earlier baseline that did not count
+## The discarded Aug-14 baselines
 
 There was an earlier pair of baseline runs, two days before these. IQ4_XS
 scored 83.7% and Q8_0 scored 82.6%. (The 83.7% is a coincidence: the old
@@ -430,7 +431,7 @@ one string, so they cannot drift apart.
 **Classify the gap before spending GPU time.** A config that differs *between*
 two runs being compared breaks the comparison and forces a re-run. A config
 that is unknown but *shared* across them costs reproducibility only — annotate
-it and move on. Those are different problems and only one of them is expensive.
+it and move on. Those are different problems, and only the first is expensive.
 
 **Report the resolution, not just the result.** A null result from a small
 paired eval says more about the instrument than the models. Reporting the
@@ -444,9 +445,9 @@ win while token count quietly rises. Or it can be *validity*: the number does
 not measure the capability at all.
 
 They look alike in a postmortem. They need opposite fixes. The first wants a
-second axis reported. The second wants a different measurement entirely. Their
-phrasing for it is better than mine: adding axes to a metric that never
-measured the capability is the failure that looks like diligence.
+second axis reported. The second wants a different measurement entirely. Adding
+axes to a metric that never measured the capability looks like diligence and
+is not.
 
 ## Credit
 
