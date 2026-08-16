@@ -93,8 +93,8 @@ One bookkeeping note if you tally the published CSVs: 24 rows are tagged `GPQA
 Diamond` and one `GPQA Diamond (modified)`. That marker comes from the upstream
 ds4 corpus, not from us, and the item is counted inside the 25 above.
 
-The bits-per-weight column is measured, not nominal: file size times eight over
-the parameter count. Q8_0 lands exactly on its nominal 8.500. IQ4_XS does not —
+The bits-per-weight column is measured: file size times eight over the
+parameter count. Q8_0 lands exactly on its nominal 8.500. IQ4_XS does not —
 it comes out at 4.596 rather than the 4.25 the format name suggests, largely
 because the embedding and output tensors are kept at higher precision.
 
@@ -212,7 +212,7 @@ The defensible statement: **no measurable accuracy loss against Q8 down to
   text{font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
   .tabnum{font-variant-numeric:tabular-nums}
 </style><rect class="bg" x="0" y="0" width="720" height="420"/><text class="ttl" x="12" y="20">Size against accuracy</text><text class="sub" x="12" y="36">every leg on one GPU, one server config, one 92-question set</text><rect class="s1" x="12" y="46" width="10" height="10" rx="2"/><text class="sub" x="27" y="55">stock quant</text><rect class="s2" x="120" y="46" width="10" height="10" rx="2"/><text class="sub" x="135" y="55">shoehorn fit</text><line class="grid" x1="70" y1="220.1" x2="590" y2="220.1"/><text class="tick" x="62" y="224.1" text-anchor="end">80%</text><line class="grid" x1="70" y1="172.1" x2="590" y2="172.1"/><text class="tick" x="62" y="176.1" text-anchor="end">85%</text><line class="grid" x1="70" y1="124.0" x2="590" y2="124.0"/><text class="tick" x="62" y="128.0" text-anchor="end">90%</text><line class="grid" x1="70" y1="76.0" x2="590" y2="76.0"/><text class="tick" x="62" y="80.0" text-anchor="end">95%</text><text class="tick" x="70.0" y="388" text-anchor="middle">0</text><text class="tick" x="155.8" y="388" text-anchor="middle">5</text><text class="tick" x="241.6" y="388" text-anchor="middle">10</text><text class="tick" x="327.4" y="388" text-anchor="middle">15</text><text class="tick" x="413.3" y="388" text-anchor="middle">20</text><text class="tick" x="499.1" y="388" text-anchor="middle">25</text><text class="tick" x="584.9" y="388" text-anchor="middle">30</text><text class="sub" x="330.0" y="406" text-anchor="middle">model file size (GiB)</text><line class="axis" x1="70" y1="76" x2="70" y2="370"/><line class="axis" x1="70" y1="370" x2="590" y2="370"/><circle class="ring" cx="403.1" cy="142.8" r="6" fill="none"/><circle class="s2" cx="403.1" cy="142.8" r="5"/><text class="sub" x="415.1" y="146.8">fit-128k</text><path class="ci" d="M376.9,142.8 L379.9,156.8" opacity="0.5"/><circle class="ring" cx="370.9" cy="142.8" r="6" fill="none"/><circle class="s2" cx="370.9" cy="142.8" r="5"/><text class="sub" x="382.9" y="160.8">fit-192k</text><path class="ci" d="M344.7,153.3 L347.7,181.3" opacity="0.5"/><circle class="ring" cx="338.7" cy="153.3" r="6" fill="none"/><circle class="s2" cx="338.7" cy="153.3" r="5"/><text class="sub" x="350.7" y="185.3">fit-256k</text><path class="ci" d="M327.0,174.1 L330.0,202.1" opacity="0.5"/><circle class="ring" cx="321.0" cy="174.1" r="6" fill="none"/><circle class="s1" cx="321.0" cy="174.1" r="5"/><text class="sub" x="333.0" y="206.1">iq4-mtp</text><circle class="ring" cx="534.3" cy="184.6" r="6" fill="none"/><circle class="s1" cx="534.3" cy="184.6" r="5"/><text class="sub" x="546.3" y="188.6">q8-mtp</text><circle class="ring" cx="227.2" cy="341.2" r="6" fill="none"/><circle class="s2" cx="227.2" cy="341.2" r="5"/><text class="sub" x="239.2" y="345.2">fit-17g</text></svg>
-<figcaption>File size against accuracy. The cliff is between 4.920 and 2.876 bits per weight, not gradual.</figcaption>
+<figcaption>File size against accuracy. The cliff sits between 4.920 and 2.876 bits per weight.</figcaption>
 </figure>
 
 ## The one gap that does clear the bar
