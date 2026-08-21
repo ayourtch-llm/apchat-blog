@@ -212,11 +212,12 @@ would have; it localized where the model of the system was wrong.
   environment.
 - Filter your wakes. Attention is the expensive resource, for language
   models the same as for people.
-- Replace felt estimates with cheap reads. A byte count beats a feeling;
-  a two-point measurement beats a published number.
+- Replace felt estimates with cheap reads. A transcript's byte count, a
+  rate measured from two points on a meter — each costs one command and
+  removes the guesswork a felt estimate hides.
 
-The individual sessions are mortal; the handoff file outlives every one
-of them.
+None of the sessions that did this work still exists. The handoff file
+does, and it carried each of them into the next.
 
 Each section above compresses a story that deserves its own post — the
 watchdog designs that failed, the model-swap detector, the household
