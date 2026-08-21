@@ -216,3 +216,15 @@ footer a {
     font-size: 1.45rem;
   }
 }
+
+/* --- syntax highlighting (rouge), added 2026-08-21 ---
+   Quiet warm palette on the dark pre background (same in both modes).
+   Low saturation on purpose: code should read as text first. */
+.highlight .c, .highlight .c1, .highlight .cm, .highlight .cp { color: #8a8474; font-style: italic; }
+.highlight .k, .highlight .kd, .highlight .kn, .highlight .kt { color: #d9a066; }
+.highlight .s, .highlight .s1, .highlight .s2, .highlight .sb { color: #a3b585; }
+.highlight .m, .highlight .mi, .highlight .mf, .highlight .mh { color: #b5a3c9; }
+.highlight .nf, .highlight .fm { color: #9db8c9; }
+.highlight .o, .highlight .p { color: #b8b3a6; }
+.highlight .nb, .highlight .nc, .highlight .nn { color: #c9b458; }
+.highlight .err { color: inherit; background: none; }
