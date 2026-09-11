@@ -162,7 +162,7 @@ This post was run through the two command-line checkers after the last edit. The
 - Oskar Austegard, declauding skill, https://github.com/oaustegard/claude-skills, folder `declauding/`, tag declauding-v0.1.1, MIT.
 - Simon Willison, LLM cliché highlighter, https://github.com/simonw/tools/blob/main/llm-cliche-highlighter.html, commit aabd3c5 of 2026-08-27.
 - Wikipedia, "Signs of AI writing" (the essay behind Simon's second group).
-- Boris Orekhov and Frol Uspensky, "Гальванизация автора, или эксперимент с нейронной поэзией", Novy Mir 2018 №6. Russian version of their Scando-Slavica 61(2), 2015 paper.
+- Boris Orekhov and Frol Uspensky, "Гальванизация автора, или эксперимент с нейронной поэзией", Novy Mir 2018 №6, https://nm1925.ru/articles/2018/201806/galvanizatsiya-avtora-ili-eksperiment-s-neyronnoy-poeziey-6935/ . Russian version of their Scando-Slavica 61(2), 2015 paper.
 - Jiang et al., "Artificial Hivemind: The Open-Ended Homogeneity of Language Models (and Beyond)", NeurIPS 2025, arXiv 2510.22954.
 - Amy Bennett-Zendzian, "Sentence Clarity: Characters and Actions", BU Teaching Writing program, 2020, distilling Williams and Bizup, *Style: The Basics of Clarity and Grace*. https://www.bu.edu/teaching-writing/files/2020/03/Sentence-Clarity-Script.pdf
 - ASD-STE100 Simplified Technical English, Issue 9, January 2025. Machine-readable extraction at https://github.com/sourdough-bread/asd-ste100-checker (third-party, unaudited).
