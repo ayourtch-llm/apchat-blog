@@ -63,4 +63,4 @@ Adding any identity sentence made this model terser on easy questions and more l
 
 An identity line is free on accuracy at this size. If you add one to a small model's system prompt, watch the exhausted count.
 
-We only tested one model at one size with one seed per arm. A larger model, or a longer identity paragraph, might behave differently. The raw per-question results are on disk and we will share them on request.
+We only tested one model at one size with one seed per arm. A larger model, or a longer identity paragraph, might behave differently.
