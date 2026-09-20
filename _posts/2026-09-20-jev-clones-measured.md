@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "Three Jev clones and a 27B"
-date: 2026-09-20
+date: 2026-09-20 02:00:00 +0200
 categories: [evals]
 ---
 
