@@ -51,6 +51,16 @@ The sysctl has a trap worth knowing. `net.mptcp.enabled=0` is read when a socket
 
 Ubuntu rates the CVE 9.8. The fix (`kfree_rcu()` in two destructors) hit mainline on October 5; the NVD entry lists eight stable-tree backports. Ubuntu 24.04's current kernels — 6.8.0-142 and -147 at this writing — predate the fix; the noble patch is still "work in progress" for 6.8.0-149.
 
+## Is plain TCP vulnerable? A code walkthrough
+
+We walked the v6.8 source with a second reviewer checking every line reference. The answer: yes. The patch touches only ordinary IPv4 TCP files — `tcp_ipv4.c` and `af_inet.c`, no MPTCP file at all. Any IPv4 TCP server carries this bug.
+
+The entry gate is IP options. The object that gets freed (`ireq_opt`, the request socket's saved IPv4 options) is allocated only when the client's SYN carries IP options — the save function allocates only `if (opt->optlen)`. Almost nothing sends IPv4 options on the modern internet. No options in the SYN, nothing is allocated, and the race has no victim.
+
+Why the public exploit used MPTCP, then? Same bug, better timing. Reading the code: MPTCP's join handshake has failure paths where the kernel creates the child connection and destroys it in the same call — so the free lands on a packet the attacker chose, racing the retransmitted SYN on another CPU. A plain TCP server frees that child only later, when the application accepts and closes it. Same lock-free window since 2010, but a plain-TCP attacker cannot time the free from the wire as precisely. (That paragraph is our code reading; the Anthropic write-up does not say why it chose MPTCP.)
+
+This is also why blocking IP options blocks the issue: a SYN dropped for carrying IP options never gets a request socket with a saved-options object at all. One packet-filter rule covers the plain TCP path, the MPTCP path, and the request-socket migration path alike. Two known gaps: hosts using CIPSO/NetLabel labeling (which set the same field without wire options), and traffic bridged into container network namespaces that bypasses the host's prerouting hook.
+
 ## Check your own box
 
 ```sh
