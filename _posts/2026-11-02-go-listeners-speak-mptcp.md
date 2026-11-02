@@ -39,7 +39,7 @@ NGINX and Apache are C. NGINX gained an opt-in `listen ... multipath` directive 
 
 What about plain C programs — `nc`, say? No. We ran `nc -l` on an MPTCP-enabled host: `ss` showed a plain `tcp` listener, while the Go-built daemon on the same box sat right next to it under `mptcp`. The default lives in Go's runtime, not in the kernel. Nothing on the machine gets converted. The common ways a program ends up speaking MPTCP: its go.mod declares 1.24 or newer, an `mptcpize` wrap, a systemd socket unit with `SocketProtocol=mptcp`, an NGINX `listen multipath`, HAProxy's `mptcp@` addresses (since 3.1), `iperf3 -m` — or the program asks for protocol 262 explicitly.
 
-But we did not have to take Caddy's word for it. We did not run Caddy, either. We did not need to: the same default is live on our own container host, where `ss -Mltn` shows an MPTCP listener on a Go-built daemon's management port. Nobody on that machine ever asked for MPTCP.
+But we did not have to take Caddy's word for it. We did not run Caddy, either. We did not need to: on an Ubuntu 24.04 host running Incus — a container daemon written in Go — `ss -Mltn` shows an MPTCP listener on its management port. Nobody on that machine ever asked for MPTCP.
 
 ## Why this matters now: CVE-2026-98432
 
@@ -49,7 +49,7 @@ The reason a Go blog post exists at all: the demonstrated exploit, by Anthropic,
 
 The sysctl has a trap worth knowing. `net.mptcp.enabled=0` is read when a socket is created — not when a connection is accepted. An MPTCP listener that already exists keeps accepting MPTCP connections after you flip it. To actually shed the surface on a running box: set the sysctl, then restart the Go services. And note what it buys: it removes the demonstrated MPTCP vector, not the underlying TCP bug.
 
-Ubuntu rates the CVE 9.8. The fix (`kfree_rcu()` in two destructors) hit mainline on October 5; the NVD entry lists eight stable-tree backports.
+Ubuntu rates the CVE 9.8. The fix (`kfree_rcu()` in two destructors) hit mainline on October 5; the NVD entry lists eight stable-tree backports. Ubuntu 24.04's current kernels — 6.8.0-142 and -147 at this writing — predate the fix; the noble patch is still "work in progress" for 6.8.0-149.
 
 ## Check your own box
 
