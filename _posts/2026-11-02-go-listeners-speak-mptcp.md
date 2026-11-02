@@ -19,11 +19,11 @@ We checked. The claim is wrong about the mechanism and half right about the serv
 
 ## What Go 1.24 changed
 
-Go 1.21 added Multipath TCP support. You had to opt in. Go 1.24 flipped the default: TCP listeners created through `net.Listen` now use MPTCP where the kernel supports it. The release notes say so in one sentence: "ListenConfig now uses MPTCP by default on systems where it is supported (currently on Linux only)."
+[Go 1.21 added Multipath TCP support](https://go.dev/doc/go1.21#netpkgnet). You had to opt in, with [`ListenConfig.SetMultipathTCP`](https://github.com/golang/go/blob/go1.21.0/src/net/dial.go#L700-L709) or [`Dialer.SetMultipathTCP`](https://github.com/golang/go/blob/go1.21.0/src/net/dial.go#L340-L349). Go 1.24 flipped the default: TCP listeners created through `net.Listen` now use MPTCP where the kernel supports it. [The release notes](https://go.dev/doc/go1.24#netpkgnet) say so in one sentence: "ListenConfig now uses MPTCP by default on systems where it is supported (currently on Linux only)."
 
 The new default applies only when your program's go.mod declares `go 1.24` or newer. A new toolchain is not enough. A Go 1.26 build of a module that declares `go 1.22` keeps MPTCP off.
 
-In the source, one constant became two. Go 1.23 had `defaultMPTCPEnabled = false`. Go 1.24 has `defaultMPTCPEnabledListen = true` and `defaultMPTCPEnabledDial = false`. Listeners use MPTCP, dialers do not.
+In the source, one constant became two. [Go 1.23 had](https://github.com/golang/go/blob/go1.23.0/src/net/dial.go#L28-L30) `defaultMPTCPEnabled = false`. [Go 1.24 has](https://github.com/golang/go/blob/go1.24.0/src/net/dial.go#L28-L32) `defaultMPTCPEnabledListen = true` and `defaultMPTCPEnabledDial = false`. Listeners use MPTCP, dialers do not.
 
 How does a listener know the kernel supports MPTCP? The process probes once, by creating a socket with protocol number 262 (`IPPROTO_MPTCP`). If the kernel answers "not supported", Go never tries again. If the probe passes, each listener still tries MPTCP first and falls back to plain TCP on any error.
 
