@@ -68,7 +68,7 @@ The kernel CVE was published on October 15. The bug is a use-after-free in IPv4 
 
 The Go connection: Anthropic's demonstrated exploit targeted a server with an MPTCP listener and achieved remote code execution. So the Go Security Team published guidance: set `GODEBUG=multipathtcp=0`, or put `godebug multipathtcp=0` in go.mod. They call this "a fragile mitigation", because one forgotten MPTCP listener keeps the system exposed. The same notice says it is premature to change Go's default and moves the discussion to issue 82717, a proposal opened on October 29 to disable MPTCP by default.
 
-Switching MPTCP off system-wide has a catch. `net.mptcp.enabled=0` is checked when a socket is created, not when a connection is accepted. An MPTCP listener that already exists keeps accepting MPTCP connections after you flip it, so set the sysctl and then restart the Go services. Even then it only removes the demonstrated MPTCP route; the TCP bug stays.
+Switching MPTCP off system-wide has a catch. `net.mptcp.enabled=0` is checked when a socket is created ([`mptcp_init_sock`](https://github.com/apchat-agent/linux/blob/v6.8/net/mptcp/protocol.c#L2800-L2801)), not when a connection is accepted. An MPTCP listener that already exists keeps accepting MPTCP connections after you flip it, so set the sysctl and then restart the Go services. Even then it only removes the demonstrated MPTCP route; the TCP bug stays.
 
 Ubuntu gives the CVE priority High; its CVSS 3.1 score, on Ubuntu's page and in NVD, is 9.8. The fix (`kfree_rcu()` in two destructors) reached mainline on October 5, and NVD lists seven stable-tree backports. Ubuntu 24.04 kernels before 6.8.0-149 do not have it; the noble patch is listed as "work in progress" for 6.8.0-149.
 
@@ -94,4 +94,4 @@ The third command may load the `mptcp_diag` module; that is expected. When we ra
 
 ## The accurate version of the claim
 
-The kernel bug is shared by every IPv4 TCP server on the machine, so that part of "doesn't matter which server" is true, and a patched kernel is the only real fix. On most distribution kernels, though not RHEL's, a Go 1.24+ listener (Caddy included) speaks MPTCP without being asked, and this CVE shows why that matters. But nothing "got loaded". The MPTCP code was built in from boot; Go 1.24 programs started using it.
+The kernel bug is shared by every IPv4 TCP server on the machine, so that part of "doesn't matter which server" is true, and a patched kernel is the only real fix. On most distribution kernels, though not RHEL's, a Go 1.24+ listener (Caddy included) speaks MPTCP without being asked, and this CVE shows why that matters. The MPTCP code was built in from boot; Go 1.24 programs started using it.
