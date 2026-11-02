@@ -29,7 +29,7 @@ How does a listener know the kernel supports MPTCP? The process probes once, by 
 
 ## The mechanism in the claim is wrong
 
-Nothing "got loaded". Linux's MPTCP protocol cannot be a loadable module. Its Kconfig entry has been `bool` since it was merged in kernel 5.6, so it is either built into the kernel or compiled out. On kernel 5.6+ without MPTCP, Go's probe gets `EPROTONOSUPPORT`. Below 5.6 it gets `EINVAL`. Either way the listener uses plain TCP.
+Nothing "got loaded". Linux's MPTCP protocol cannot be a loadable module. Its Kconfig entry has been `bool` since it was merged in kernel 5.6 ([v5.6](https://github.com/apchat-agent/linux/blob/v5.6/net/mptcp/Kconfig#L2-L3), [v6.8](https://github.com/apchat-agent/linux/blob/v6.8/net/mptcp/Kconfig#L2-L3); there is no `net/mptcp/` [in v5.5](https://github.com/apchat-agent/linux/tree/v5.5/net)), so it is either built into the kernel or compiled out. On kernel 5.6+ without MPTCP, Go's probe gets `EPROTONOSUPPORT`. Below 5.6 it gets `EINVAL`. Either way the listener uses plain TCP.
 
 One module does exist. The MPTCP *diagnostics* interface, `mptcp_diag`, can be built as a module, and the kernel loads it on demand when a tool such as `ss -M` asks about MPTCP sockets. That module reports on sockets. It is not the protocol.
 
