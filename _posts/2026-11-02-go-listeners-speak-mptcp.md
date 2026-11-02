@@ -37,9 +37,9 @@ On Ubuntu 24.04, Debian 12, Arch, Fedora and Alpine the MPTCP code is built in a
 
 ## The server list is half right
 
-Caddy is written in Go, and its go.mod says `go 1.26.0`. Nothing in its listener setup turns MPTCP off. Build Caddy from its own module today and its listeners are MPTCP listeners by default. Custom builds made with `xcaddy` generate their own go.mod, so check the `go` line there. For Caddy, the Bluesky claim is correct.
+Caddy is written in Go, and [its go.mod](https://github.com/caddyserver/caddy/blob/v2.11.7/go.mod#L3) says `go 1.26.0`. Nothing in [its listener setup](https://github.com/caddyserver/caddy/blob/v2.11.7/listen_unix.go#L170) turns MPTCP off. Build Caddy from its own module today and its listeners are MPTCP listeners by default. Custom builds made with `xcaddy` generate their own go.mod, so check the `go` line there. For Caddy, the Bluesky claim is correct.
 
-NGINX and Apache are C. NGINX gained an opt-in `listen ... multipath` parameter in 1.29.7 this March. Apache 2.4's `Listen` directive has no MPTCP option. Their defaults are plain TCP, and from kernel 5.7 onward a plain TCP listener never calls into the MPTCP code. An MPTCP handshake attempt against it is just an unknown TCP option, and the connection proceeds as ordinary TCP.
+NGINX and Apache are C. NGINX gained an opt-in [`listen ... multipath`](https://github.com/nginx/nginx/blob/release-1.29.7/src/http/ngx_http_core_module.c#L4226-L4236) parameter [in 1.29.7](https://github.com/nginx/nginx/blob/release-1.29.7/docs/xml/nginx/changes.xml#L106-L109) this March. Apache 2.4's `Listen` directive has no MPTCP option: [it creates the listening socket with protocol 0](https://github.com/apache/httpd/blob/ffeea046bc2416d752050b0daa8ae1188883a37d/server/listen.c#L490-L491), which is plain TCP. A [`Listen ... multipathtcp` option](https://github.com/apache/httpd/blob/a4daf82cdcba7a2e6cdd4e3ca826834f5ca3f772/server/listen.c#L1055-L1057) exists only in Apache's development branch (2.5.1-dev), not in a release. Their defaults are plain TCP, and from kernel 5.7 onward a plain TCP listener never calls into the MPTCP code. An MPTCP handshake attempt against it is just an unknown TCP option, and the connection proceeds as ordinary TCP.
 
 What about other C programs, `nc` for example? We ran `nc -l` on an MPTCP-enabled host. `ss` showed a plain `tcp` listener, with a Go-built daemon on the same box listed under `mptcp`. The default is in Go's `net` package, and nothing on the machine gets converted. The common ways a program ends up speaking MPTCP:
 
@@ -48,6 +48,17 @@ What about other C programs, `nc` for example? We ran `nc -l` on an MPTCP-enable
 - a systemd socket unit with `SocketProtocol=mptcp` creates its socket
 - NGINX `listen ... multipath`, HAProxy `mptcp@` addresses (since 3.1), `iperf3 -m`
 - the program asks for protocol 262 itself
+
+Other servers, each checked in its own source at the release named:
+
+- **Traefik** (Go, [go.mod `go 1.27.0`](https://github.com/traefik/traefik/blob/v3.7.17/go.mod#L3)): turns MPTCP **off** for its listeners [unless GODEBUG mentions `multipathtcp`](https://github.com/traefik/traefik/blob/v3.7.17/pkg/server/server_entrypoint_tcp.go#L527-L533). Traefik had it on in 3.4.2 and [removed it in 3.4.5](https://github.com/traefik/traefik/blob/v3.7.17/docs/content/migrate/v3.md#L1134-L1141) after `setsockopt` failures.
+- **HAProxy**: opt-in only, with an [`mptcp@` address prefix](https://github.com/haproxy/haproxy/blob/v3.1.0/doc/configuration.txt#L29101-L29106) on a `bind` line, since 3.1 ([the MPTCP protocol entry](https://github.com/haproxy/haproxy/blob/v3.1.0/src/proto_tcp.c#L150-L181)). A plain `bind :443` is TCP.
+- **lighttpd**: opt-in, with [`server.network-mptcp`, off by default](https://github.com/lighttpd/lighttpd1.4/blob/lighttpd-1.4.85/src/network.c#L884) ([socket call](https://github.com/lighttpd/lighttpd1.4/blob/lighttpd-1.4.85/src/network.c#L559-L564)), [since 1.4.76](https://github.com/lighttpd/lighttpd1.4/blob/lighttpd-1.4.85/NEWS#L424-L425).
+- **Envoy**: opt-in, with a per-listener [`enable_mptcp`](https://github.com/envoyproxy/envoy/blob/v1.40.2/api/envoy/config/listener/v3/listener.proto#L473-L475) field (a proto bool, so false unless set), [since 1.21](https://github.com/envoyproxy/envoy/blob/v1.40.2/changelogs/1.21.0.yaml#L285).
+- **Node.js**: plain TCP. Its libuv [creates TCP sockets with protocol 0](https://github.com/libuv/libuv/blob/v1.53.0/src/unix/tcp.c#L68) and has no MPTCP option.
+- **Python**: plain TCP unless the program asks. `socket.IPPROTO_MPTCP` [exists since 3.10](https://github.com/python/cpython/blob/v3.15.2/Doc/library/socket.rst#L1535-L1536), but you have to pass it yourself.
+- **OpenSSH** sshd: plain TCP; [the listening socket takes its protocol from getaddrinfo](https://github.com/openssh/openssh-portable/blob/V_10_6_P1/sshd.c#L828-L829), which is TCP.
+- **systemd** socket activation: opt-in, with [`SocketProtocol=mptcp`](https://github.com/systemd/systemd/blob/v262.1/man/systemd.socket.xml#L324-L330) in the unit.
 
 We did not run Caddy. On an Ubuntu 24.04 host running Incus, a container manager written in Go, `ss -Mltn` shows an MPTCP listener on its management port. Nobody on that machine asked for MPTCP.
 
