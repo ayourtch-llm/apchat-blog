@@ -11,7 +11,7 @@ categories: [security]
 
 # Which servers speak MPTCP by default? Go yes, NGINX and Apache no
 
-In a Bluesky thread this week, people argued about web servers: Caddy or NGINX, which one hoses you less. Then someone made a claim that had nothing to do with either:
+In a Bluesky thread this week, people argued about web servers: Caddy or NGINX, which one hoses you less. Then someone made a claim that it doesn't matter which:
 
 > My understanding is that if you're running (or were running!) a Go binary with a TCP listener on the same machine it doesn't matter if you use Caddy or NGINX or Apache, you're hosed either way because mptcp got loaded
 
