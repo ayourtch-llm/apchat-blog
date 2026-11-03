@@ -120,4 +120,4 @@ with the window set to the whole context and see whether the edit moves toward 4
 - We tested one model, one task (math) and one measure of text quality, with one answer per problem. The original
   post also reports gains in grade-school math and instruction following, which we did not check.
 
-We kept every script, result file and file hash from these runs, so the tests above can be repeated exactly.
+We kept every script, result file and file hash from these runs, so the tests above can be repeated exactly. The scripts, the per-problem results for the 400-problem test and the provenance file are [published next to this post](https://ayourtch-llm.github.io/apchat-blog/posts/2026-11-03-removing-a-loop-direction/files/).
