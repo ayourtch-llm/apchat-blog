@@ -6,14 +6,14 @@ provenance.sh no longer prints the machine's hostname, and PROVENANCE.md has its
 one home-directory path removed. Nothing that computes a result was changed. The sha256 hashes
 in PROVENANCE.md are those of the original files, so those five scripts hash differently here.
 
-- collect.py: base model answers MATH train problems (40 per subject) via llama-server.
-- acts.py: finds where each answer starts looping and averages the residual stream before and inside the loop.
-- rank.py: prints, per layer, how much the MLP output points along the loop direction.
-- edit.py (edit A) and edit2.py (edit B and the sw-* variants): the down_proj column edit.
-- evalmath.py: MATH-500 evaluation (math_verify), one record per problem.
-- run-*.sh, sweep.sh, stage3.sh, stage4.sh: the runs, in the order they happened.
-- provenance.sh and PROVENANCE.md: software versions, file hashes, and every run's summary line.
-- *-h400-32k.jsonl: per-problem results on MATH-500 problems 100-499 (base, our edit B,
+- [collect.py](collect.py): base model answers MATH train problems (40 per subject) via llama-server.
+- [acts.py](acts.py): finds where each answer starts looping and averages the residual stream before and inside the loop.
+- [rank.py](rank.py): prints, per layer, how much the MLP output points along the loop direction.
+- [edit.py](edit.py) (edit A) and [edit2.py](edit2.py) (edit B and the sw-* variants): the down_proj column edit.
+- [evalmath.py](evalmath.py): MATH-500 evaluation (math_verify), one record per problem.
+- [run-editB.sh](run-editB.sh), [run-ref-p50c.sh](run-ref-p50c.sh), [run-32k.sh](run-32k.sh), [sweep.sh](sweep.sh), [stage3.sh](stage3.sh), [stage4.sh](stage4.sh): the runs, in the order they happened.
+- [provenance.sh](provenance.sh) and [PROVENANCE.md](PROVENANCE.md): software versions, file hashes, and every run's summary line.
+- [base-h400-32k.jsonl](base-h400-32k.jsonl), [editB-h400-32k.jsonl](editB-h400-32k.jsonl), [ref-p50c-h400-32k.jsonl](ref-p50c-h400-32k.jsonl), [sw-a4k256-h400-32k.jsonl](sw-a4k256-h400-32k.jsonl): per-problem results on MATH-500 problems 100-499 (base, our edit B,
   Astra's edit rebuilt as ref-p50c, and the sw-a4k256 variant). Pair them by "idx".
 
 Astra's reference edit is not copied here. It comes from
